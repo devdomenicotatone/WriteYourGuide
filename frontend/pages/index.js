@@ -7,7 +7,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const backendUrl = "https://metawrite.onrender.com";
+  const backendUrl = "https://writeyourguide.onrender.com";
 
   const handleGenerateArticle = async () => {
     setLoading(true);
@@ -41,7 +41,7 @@ export default function Home() {
 
   return (
     <div style={{padding: "20px", fontFamily: "Arial, sans-serif"}}>
-      <h1>MetaWrite - Generatore di Articoli</h1>
+      <h1>writeyourguide - Generatore di Articoli</h1>
       <p>Inserisci una città o un luogo e genera un testo basato sulle guide di GetYourGuide.</p>
 
       <div style={{marginBottom: "20px"}}>

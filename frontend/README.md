@@ -1,6 +1,6 @@
 # MetaWrite Frontend
 
-Questo è il frontend Next.js per interagire con l'app MetaWrite hostata su Render.
+Questo è il frontend Next.js per interagire con l'app WriteYourGuide hostata su Render.
 
 ## Come avviare localmente
 

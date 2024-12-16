@@ -15,5 +15,5 @@ Questa è una semplice applicazione FastAPI di base per essere deployata su Rend
 
 1. Clona il repository:
    ```bash
-   git clone https://github.com/devdomenicotatone/MetaWrite.git         
-   cd MetaWrite
+   git clone https://github.com/devdomenicotatone/WriteYourGuide.git         
+   cd WriteYourGuide
