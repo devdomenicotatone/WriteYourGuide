@@ -1,5 +1,3 @@
-# utils.py
-
 import os
 import requests
 import logging
@@ -67,7 +65,7 @@ def perform_search(query: str):
 def scrape_article(url: str):
     logger.debug(f"Scraping article from URL: {url}")
 
-    # Rimuovo due punti finali o spazi
+    # Rimuovo eventuali due punti finali o spazi
     url = url.rstrip(":")
 
     headers = {
@@ -85,7 +83,7 @@ def scrape_article(url: str):
 
     soup = BeautifulSoup(r.text, 'html.parser')
 
-    # Rimuoviamo script, style e noscript
+    # Rimuoviamo script e style
     for tag in soup(["script", "style", "noscript"]):
         tag.extract()
 
@@ -104,6 +102,7 @@ def scrape_article(url: str):
         if src.startswith("https://cdn.getyourguide.com/img/tour"):
             immagini.append(src)
 
+    # Se non c'è testo significativo, ritorna vuoto
     if not cleaned_text.strip():
         return "", immagini
 

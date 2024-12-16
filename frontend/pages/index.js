@@ -1,5 +1,3 @@
-// index.js
-
 import { useState } from 'react';
 
 export default function Home() {
@@ -9,7 +7,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Inserisci qui l'indirizzo del tuo backend
   const backendUrl = "https://metawrite.onrender.com";
 
   const handleGenerateArticle = async () => {

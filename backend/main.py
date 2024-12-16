@@ -1,5 +1,3 @@
-# main.py
-
 import os
 import requests
 import logging
@@ -56,7 +54,7 @@ def search_endpoint(query: str):
 
     logger.info(f"Search endpoint called with query: {query}")
     try:
-        # Include il sito di GetYourGuide
+        # Modifichiamo la query includendo il sito di GetYourGuide
         site_query = f"site:https://www.getyourguide.it/ {query}"
         data = perform_search(site_query)
         return data
@@ -73,7 +71,7 @@ def generate_article(payload: GenerateArticleRequest):
 
     logger.info(f"generate_article endpoint called with query: {original_query}")
 
-    # Trasforma la query per cercare su GetYourGuide
+    # Trasformiamo la query per cercare su GetYourGuide
     query = f"site:https://www.getyourguide.it/ {original_query}"
 
     try:
@@ -87,7 +85,7 @@ def generate_article(payload: GenerateArticleRequest):
         logger.warning("No results found for the query")
         raise HTTPException(status_code=404, detail="Nessun risultato trovato per la query.")
 
-    # Considera i primi 10 risultati
+    # Consideriamo i primi 10 risultati
     top_items = items[:10]
     logger.info(f"Processing top {len(top_items)} results")
 
@@ -106,7 +104,7 @@ def generate_article(payload: GenerateArticleRequest):
         immagini_globali.extend(immagini)
 
         if article_text:
-            # Prompt per la rielaborazione con OpenAI
+            # Prompt per OpenAI: rielaborare il contenuto come un copywriter professionale
             prompt_message = (
                 "Sei un esperto copywriter. Di seguito troverai il contenuto di una guida estratta dal sito GetYourGuide. "
                 "Usa parole differenti ma mantieni le informazioni veritiere. Crea un contenuto composto da un titolo (h2) "
@@ -132,24 +130,33 @@ def generate_article(payload: GenerateArticleRequest):
                 logger.error(f"Error generating rewritten text for article {index}: {e}")
                 continue
 
-            # Separazione h2 e paragrafo
+            # Cerchiamo di separare l'H2 dal paragrafo. L'utente potrebbe aver generato un testo con un h2 e poi un paragrafo.
+            # Supponiamo che l'H2 sia la prima linea o il primo titolo.
+            # In caso il modello non segua esattamente le istruzioni, tentiamo alcune euristiche.
             lines = generated_text.split("\n")
             titolo = ""
             contenuto = ""
+            # Cerchiamo la prima riga che potrebbe essere un h2
+            # Esempio: se il modello ha generato: "## Titolo\nParagrafo...", lo convertiamo in <h2>
+            # Se non c'è markup, prendiamo la prima riga come titolo e il resto come paragrafo.
             if lines:
+                # Trova la prima linea non vuota per titolo
                 for i, l in enumerate(lines):
                     clean_line = l.strip()
                     if clean_line:
                         titolo = clean_line
+                        # Rimuovi eventuali markdown di h2
                         if titolo.startswith("##"):
                             titolo = titolo.replace("##", "").strip()
                         elif titolo.startswith("#"):
                             titolo = titolo.replace("#", "").strip()
+                        # Il resto delle linee costituisce il paragrafo
                         contenuto = "\n".join(lines[i+1:]).strip()
                         break
 
+            # Se non è riuscito a estrarre, assegniamo comunque qualcosa
             if not titolo:
-                titolo = "Informazioni"
+                titolo = "Informazioni sulla Guida"
             if not contenuto:
                 contenuto = generated_text
 
@@ -164,7 +171,7 @@ def generate_article(payload: GenerateArticleRequest):
         logger.error("No results could be processed successfully")
         raise HTTPException(status_code=500, detail="Non è stato possibile estrarre contenuti rilevanti.")
 
-    # Rimuove duplicati dalle immagini
+    # Rimuoviamo eventuali duplicati dalle immagini
     immagini_globali = list(set(immagini_globali))
 
     return {
